@@ -49,6 +49,7 @@ public class UDPprotocal {
     	}
     	else if(type.equals("logout")){
     		giveBack=type;
+    		giveBack+=" ";
     		giveBack+=InetAddress.getLocalHost().getHostAddress();
     		return giveBack;
     	}
@@ -100,10 +101,11 @@ public class UDPprotocal {
        		 }
        		 else{
        			 totalList.removeMember(memberData[1]);
-       			 return "";
+       			 return totalList.getMember(memberData[1]).getName();
        		 }
        	 }
        	 else{
+       		System.out.println("Incorrect operation.");
        		 return "";
        	 }
        	 }

@@ -11,22 +11,12 @@ public class UDPClient
 		return friends;
 	}
 	
-	public void addClient(String type, String inputName, String inputPort) throws IOException{
-		if (type.compareTo("login")==0){
-			UDPClientLog("login",inputName,inputPort);
-		}
-		else{
-			System.out.println("fail to login");
-		}
+	public void logIn(String inputName, String inputPort) throws IOException{
+		UDPClientLog("login",inputName,inputPort);
 	}
 	
-	public void addClient(String type) throws IOException{
-		if(type.compareTo("logout")==0){
+	public void logOut() throws IOException{
 			UDPClientLog("logout","null","null");
-		}
-		else{
-			System.out.print("fail to logout");
-		}
 	}
 	
 	public void UDPClientLog(String type, String inputName, String inputPort) throws IOException{
@@ -43,7 +33,10 @@ public class UDPClient
 		
 		UDPprotocal pp=new UDPprotocal();
 		
-		String sentence=pp.requeString(type, inputName, inputPort);
+		String sentence="";
+		
+		sentence=pp.requeString(type, inputName, inputPort);
+		
 
 		if(sentence.isEmpty()){
 			System.out.println("fail to send request.");

@@ -4,6 +4,7 @@ import java.net.*;
 
 public class UDPServer 
 {
+	
    public static void main(String args[]) throws Exception
    {
 	DatagramSocket serverSocket =new DatagramSocket(9876);
@@ -25,8 +26,8 @@ public class UDPServer
          
          String sendString=pp.inputAdd(receiveMember);
          
-         if(sendString.isEmpty()){
-        	 
+         if(!sendString.contains("%")){
+        	 System.out.print(sendString+" has left");
          }
          else{
 	         InetAddress IPAddress = receivePacket.getAddress();

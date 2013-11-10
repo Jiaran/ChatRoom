@@ -7,10 +7,8 @@ public class UDPtest {
 		
 		UDPClient tom=new UDPClient();
 	
-		tom.addClient("login","tom","9999");
+		tom.logIn("tom","9999");
 		
-		iterator it=
-		
-		tom.friends.
+		tom.logOut();
 	}
 }
