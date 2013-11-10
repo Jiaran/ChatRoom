@@ -8,7 +8,7 @@ public class UDPtest {
 		UDPClient tom=new UDPClient();
 	
 		tom.logIn("tom","9999");
-		
 		tom.logOut();
+		
 	}
 }
