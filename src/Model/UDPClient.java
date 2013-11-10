@@ -36,7 +36,6 @@ public class UDPClient
 		String sentence="";
 		
 		sentence=pp.requeString(type, inputName, inputPort);
-		System.out.println(sentence);
 
 		if(sentence.isEmpty()){
 			System.out.println("fail to send request.");

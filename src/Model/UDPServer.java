@@ -4,6 +4,8 @@ import java.net.*;
 
 public class UDPServer 
 {
+	//private MemberList totalList;
+	
 	
    public static void main(String args[]) throws Exception
    {
@@ -11,7 +13,8 @@ public class UDPServer
 
       byte[] receiveData = new byte[1024];
       byte[] sendData;
-
+      
+      UDPprotocal pp=new UDPprotocal();
       
       while(true)
       {
@@ -22,7 +25,7 @@ public class UDPServer
 
          String receiveMember = new String(receivePacket.getData(),0, receivePacket.getLength());
          
-         UDPprotocal pp=new UDPprotocal();
+         
          
          String sendString=pp.inputAdd(receiveMember);
          
