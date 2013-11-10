@@ -22,7 +22,7 @@ public class UDPServer
 
          String receiveMember = new String(receivePacket.getData(),0, receivePacket.getLength());
          
-         UDPprotocal pp=new UDPprotocal();
+         //UDPprotocal pp=new UDPprotocal();
          
          String sendString=pp.inputAdd(receiveMember);
          
