@@ -103,7 +103,7 @@ public class UDPprotocal {
        			System.out.println("Someone failed to leave the community.");
        		 }
        		 else{
-       			String name=totalList.getMember("10.190.82.120").getName();
+       			String name=totalList.getMember(memberData[1]).getName();
        			totalList.removeMember(memberData[1]);
        			return name;
        		 }

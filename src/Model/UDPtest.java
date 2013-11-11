@@ -10,5 +10,10 @@ public class UDPtest {
 
 		tom.logOut();
 		
+		UDPClient bell=new UDPClient();
+		
+		bell.logIn("bell", "1234");
+		bell.logOut();
+		
 	}
 }

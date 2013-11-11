@@ -5,6 +5,8 @@ import java.net.*;
 
 public class UDPClient 
 {
+	private static final int TIMEOUT=5000;
+	
 	private MemberList friends;
 	
 	public MemberList getList(){
@@ -23,6 +25,7 @@ public class UDPClient
 		int ServerPort=9876;
 
 		DatagramSocket clientSocket = new DatagramSocket();
+		clientSocket.setSoTimeout(TIMEOUT); 
 
 		InetAddress IPAddress = InetAddress.getLocalHost();
 		//replace it with true server name
