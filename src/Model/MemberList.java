@@ -11,6 +11,13 @@ public class MemberList {
     public MemberList () {
         totalList = new HashMap<String, Member>();
     }
+    
+    public boolean hasIP(String ipNumber){
+    	if (totalList.containsKey(ipNumber))
+    		return true;
+    	else
+    		return false;
+    }
 
     public void addMember (String memberName, String memberIP, String memberPort) {
         if (memberName.isEmpty() || memberIP.isEmpty() || memberPort.isEmpty()) {

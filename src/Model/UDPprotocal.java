@@ -71,8 +71,11 @@ public class UDPprotocal {
 	       		 String ipAddress =memberData[2];
 	       		 String portNumber = memberData[3];
 	       		 
-	       		 totalList.addMember(name, ipAddress, portNumber);
-	       		 
+	       		 if(totalList.hasIP(ipAddress))
+	       			totalList.addMember(name, "11111", portNumber);
+	       		 else{
+	       			 totalList.addMember(name, ipAddress, portNumber);
+	       		 }
 	       		 Set<String> list=totalList.getList();
 			     Iterator<String> it=list.iterator();
 			         
