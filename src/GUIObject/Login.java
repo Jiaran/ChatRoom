@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import controller.Controller;
 
@@ -32,6 +33,10 @@ public class Login extends GUISection {
         @Override
         public void actionPerformed (ActionEvent arg0) {
             String name=myNameField.getText();
+            if(name.equals("")){
+                JOptionPane.showMessageDialog(null, "Please Input Name");
+                return;
+            }
             System.out.println(name);
             myController.login(name);
             

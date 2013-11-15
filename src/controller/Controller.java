@@ -8,14 +8,15 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import model.Model;
 import GUIObject.ClientList;
 import GUIObject.Display;
 import GUIObject.HalfScreen;
 import GUIObject.Login;
 import GUIObject.RunCode;
 import GUIObject.Settings;
-import Model.Model;
 
 
 public class Controller {
@@ -71,31 +72,32 @@ public class Controller {
     public void login (String name) {
         myModel = new Model(name);
         myLogin.setVisible(false);
-        myClientWindow.pack();
-        // get names;
-
-        List<String> strings = new ArrayList<String>();
-        strings.add("hahaha");
-        strings.add("jr");
-        strings.add("karl");
-
+        
+   
+        
+        myModel.login();
+        myClientList.setMembers(myModel.getTotalList());
         myClientList.updateView();
+        myClientWindow.pack();
         myClientWindow.setVisible(true);
 
     }
 
+   
     public void start () {
         myClientWindow.setVisible(false);
         myChatRoom = new MainFrame("ChatRoom");
         myChatRoom.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         myChatRoom.addWindowListener(new BackToList());
         RunCode rc = new RunCode(this);
-        myDisplay = new Display();
+        myDisplay = new Display(this);
         HalfScreen screen = new HalfScreen(myDisplay, rc);
         myChatRoom.getContentPane().add(screen);
         myChatRoom.pack();
         myChatRoom.setLocation(200, 0);
         myChatRoom.setVisible(true);
+       
+        myModel.start();
     }
 
     private class BackToList extends WindowAdapter {
@@ -103,8 +105,10 @@ public class Controller {
         @Override
         public void windowClosing (WindowEvent e) {
             e.getWindow().dispose();
+            
+            myModel.TCPdisconnect();
             myClientWindow.setVisible(true);
-            // disconnet
+           
         }
 
     }
@@ -132,26 +136,33 @@ public class Controller {
         @Override
         public void actionPerformed (ActionEvent arg0) {
             disconnect();
+            System.exit(0);
         }
 
     }
 
     public void send (String text) {
-
+        myModel.send(text);
     }
 
     public void disconnect () {
-
-        System.exit(0);
+        myModel.logout();
+        //System.exit(0);
     }
 
     public void refresh () {
-
+        myModel.login();
+        myClientList.setMembers(myModel.getTotalList());
+        myClientList.updateView();
     }
 
     public void addClientToChatRoom (String clientName) {
         myModel.addClientToChatRoom(clientName);
 
+    }
+    
+    public List<String> getMessages(){
+        return myModel.getMessages();
     }
 
 }
