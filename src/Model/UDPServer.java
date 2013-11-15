@@ -1,52 +1,50 @@
-package Model;
+package model;
 
 import java.net.*;
 
-public class UDPServer 
+
+public class UDPServer
 {
-	//private MemberList totalList;
-	
-	
-   public static void main(String args[]) throws Exception
-   {
-	DatagramSocket serverSocket =new DatagramSocket(9876);
+    // private MemberList totalList;
 
-      byte[] receiveData = new byte[1024];
-      byte[] sendData;
-      
-      UDPprotocal pp=new UDPprotocal();
-      
-      while(true)
-      {
-         DatagramPacket receivePacket =
-            new DatagramPacket(receiveData, receiveData.length);
+    public static void main (String args[]) throws Exception
+    {
+        DatagramSocket serverSocket = new DatagramSocket(9876);
 
-         serverSocket.receive(receivePacket);
+        byte[] receiveData = new byte[1024];
+        byte[] sendData;
 
-         String receiveMember = new String(receivePacket.getData(),0, receivePacket.getLength());
-         
-         
-         
-         String sendString=pp.inputAdd(receiveMember);
-         
-         if(!sendString.contains("%")){
-        	 System.out.print(sendString+" has left");
-         }
-         else{
-	         InetAddress IPAddress = receivePacket.getAddress();
-	 		
-	         int port = receivePacket.getPort();
-	         
-		
-			 sendData = sendString.getBytes();
-			
-			 DatagramPacket sendPacket =
-			 new DatagramPacket(sendData, sendData.length,
-			                               IPAddress, port);
-		
-		     serverSocket.send(sendPacket);
-         }
-        	 
-      }
-   }
+        UDPprotocal pp = new UDPprotocal();
+
+        while (true)
+        {
+            DatagramPacket receivePacket =
+                    new DatagramPacket(receiveData, receiveData.length);
+
+            serverSocket.receive(receivePacket);
+
+            String receiveMember =
+                    new String(receivePacket.getData(), 0, receivePacket.getLength());
+
+            String sendString = pp.inputAdd(receiveMember);
+
+            if (!sendString.contains("%")) {
+                System.out.print(sendString + " has left");
+            }
+            else {
+                InetAddress IPAddress = receivePacket.getAddress();
+
+                int port = receivePacket.getPort();
+
+                sendData = sendString.getBytes();
+
+                DatagramPacket sendPacket =
+                        new DatagramPacket(sendData, sendData.length,
+                                           IPAddress, port);
+
+                serverSocket.send(sendPacket);
+            }
+
+        }
+    }
 }

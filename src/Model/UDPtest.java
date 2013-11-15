@@ -1,4 +1,4 @@
-package Model;
+package model;
 
 public class UDPtest {
 	public static void main(String[] args) throws Exception{

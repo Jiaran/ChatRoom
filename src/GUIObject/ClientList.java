@@ -9,9 +9,9 @@ import java.util.Collection;
 import java.util.Iterator;
 import javax.swing.JButton;
 import javax.swing.JTextField;
+import model.Member;
+import model.MemberList;
 import controller.Controller;
-import Model.Member;
-import Model.MemberList;
 
 
 
