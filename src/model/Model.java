@@ -46,6 +46,19 @@ public class Model {
         }
     }
     
+    public void refresh(){
+        UDPClient uc= new UDPClient();
+        try{
+            uc.logIn("", myPort);
+            myTotalList= uc.getList();
+            //return myTotalList.getIsValid();
+        }
+        catch (Exception e){
+            System.out.println("Fail to Connect");
+            System.exit(0);
+        }
+    }
+    
     public void logout(){
         UDPClient uc= new UDPClient();
         try{

@@ -174,12 +174,14 @@ public class Controller {
     }
 
     public void disconnect () {
-        myModel.logout();
+        if(myModel!=null){
+            myModel.logout();
+        }
         //System.exit(0);
     }
 
     public void refresh () {
-        myModel.login();
+        myModel.refresh();
         myClientList.setMembers(myModel.getTotalList());
         myClientList.updateView();
     }
