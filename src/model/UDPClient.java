@@ -33,6 +33,7 @@ public class UDPClient
 		//InetAddress IPAddress=InetAddress.getByName("152.3.43.164");
 
 		InetAddress IPAddress = InetAddress.getLocalHost();
+		IPAddress = InetAddress.getByName("10.190.74.251");
 		//replace it with true server name
 		
 		byte[] sendData;

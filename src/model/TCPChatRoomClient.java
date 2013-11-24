@@ -59,8 +59,11 @@ public class TCPChatRoomClient {
     }
     public void send(String fromUser) {
         
-        if(out==null)
+        if(out==null){
+            
+            myModel.addMessage("Sorry, your friend left");
             return;
+        }
         if (fromUser != null) {
             
             out.println(fromUser);
@@ -71,20 +74,13 @@ public class TCPChatRoomClient {
         try {
             
             socket= new Socket(hostName, portNumber);
-            //socket.setSoTimeout(2000);
+            System.out.println(hostName+" "+portNumber);
             
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(
                                     new InputStreamReader(socket.getInputStream()));
             out.println(clientName);
-            String isAccept="";
-            isAccept= in.readLine();
-            if (isAccept.equals("Yes")) {
-                new Thread(new TCPListeningThread()).start();
-            }
-            else{
-                quit();
-            }
+            new Thread(new TCPListeningThread()).start();
             
            
         }
@@ -103,7 +99,9 @@ public class TCPChatRoomClient {
     
     public synchronized void quit () {
         try {
-            System.out.println(in);
+            if(out!=null){
+                out.println(clientName+" left the chat room");
+            }
             if (socket != null) {
                 socket.shutdownInput();
                 socket.shutdownOutput();
@@ -131,7 +129,17 @@ public class TCPChatRoomClient {
         public void run () {
             String fromServer;
             try {
+                String isAccept="";
+                
+                isAccept= in.readLine();
+                if(isAccept==null ||!isAccept.equals("Yes") ){
+                    quit();
+                    return;
+                }
+                
+                
                 while ((fromServer = in.readLine()) != null) {
+                    
                     myModel.addMessage(fromServer);
 
                 }

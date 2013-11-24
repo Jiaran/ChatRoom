@@ -12,7 +12,7 @@ public class MainFrame extends JFrame {
 
     public MainFrame (String title) {
 
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         this.setTitle(title);
         
       
