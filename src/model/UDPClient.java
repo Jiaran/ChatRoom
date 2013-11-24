@@ -17,7 +17,7 @@ public class UDPClient
 	
 	public void logIn(String inputName, String inputPort) throws IOException{
 		if(inputName.equals(""))
-			UDPClientLog("refresh",inputName,inputPort);
+			UDPClientLog("refresh",myName,inputPort);
 		else{
 			myName=inputName;
 			UDPClientLog("login",inputName,inputPort);
@@ -37,7 +37,7 @@ public class UDPClient
 		//InetAddress IPAddress=InetAddress.getByName("152.3.43.164");
 
 		InetAddress IPAddress = InetAddress.getLocalHost();
-		IPAddress = InetAddress.getByName("10.190.82.91");
+		//IPAddress = InetAddress.getByName("10.190.82.91");
 		//replace it with true server name
 		
 		byte[] sendData;
