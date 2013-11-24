@@ -16,8 +16,12 @@ public class UDPClient
 	}
 	
 	public void logIn(String inputName, String inputPort) throws IOException{
-		myName=inputName;
-		UDPClientLog("login",inputName,inputPort);
+		if(inputName.equals(""))
+			UDPClientLog("refresh",inputName,inputPort);
+		else{
+			myName=inputName;
+			UDPClientLog("login",inputName,inputPort);
+		}
 	}
 	
 	public void logOut() throws IOException{

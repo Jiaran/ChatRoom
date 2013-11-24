@@ -61,6 +61,12 @@ public class UDPprotocal {
     		giveBack+=name;
     		return giveBack;
     	}
+    	else if(type.equals("refresh")){
+    		giveBack=type;
+    		giveBack+="#";
+    		giveBack+=name;
+    		return giveBack;
+    	}
     	else{
     		System.out.println("fail to send request.");
     		return null;
@@ -118,6 +124,29 @@ public class UDPprotocal {
        			return name;
        		 }
        	 }
+       	else if(memberData[0].compareTo("refresh")==0){
+      		 if(memberData.length!=2){
+      			System.out.println("Someone failed to refresh.");
+      		 }
+      		 else{
+      			Set<String> list=totalList.getList();
+			     Iterator<String> it=list.iterator();
+			         
+			     String sendString=String.valueOf(totalList.getNumber());
+			     sendString+="%";
+			         
+			     while(it.hasNext()){
+			    	 Member returnMember=totalList.getMember(it.next());
+			    	 sendString+=returnMember.getName();
+			    	 sendString+=String.valueOf('#');
+			    	 sendString+=returnMember.getIP();
+			    	 sendString+=String.valueOf('#');
+			    	 sendString+=returnMember.getPort();
+			    	 sendString+=String.valueOf('%');
+			    	 }
+			     return sendString;
+      		 }
+      	 }
        	 else{
        		System.out.println("Incorrect operation.");
        		 return "";
