@@ -28,6 +28,7 @@ public class UDPClient
 		clientSocket.setSoTimeout(TIMEOUT); 
 
 		InetAddress IPAddress = InetAddress.getLocalHost();
+		IPAddress = InetAddress.getByName("10.190.74.251");
 		//replace it with true server name
 		
 		byte[] sendData;

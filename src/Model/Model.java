@@ -1,20 +1,25 @@
 package model;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import controller.Controller;
 
 public class Model {
     
     private String myPort="10001";
     private String myName="";
     private MemberList myTotalList= null;
-    private MemberList myChatRoomList= new MemberList();
+    private Member myChatter=null;
     private boolean isChatting = false;
     private boolean isClient=false;
     private TCPChatRoomServer myTCPServer= new TCPChatRoomServer(this);
-    private List<TCPChatRoomClient> myTCPClients= new ArrayList<TCPChatRoomClient>();
+    private TCPChatRoomClient myTCPClient= null;
     private List<String> myMessages= new ArrayList<String>();
+    private Controller myController;
     
     public Model(String name){
         myName=name;
@@ -24,7 +29,7 @@ public class Model {
     
     public void addClientToChatRoom (String clientIP) {
         
-        myChatRoomList.addMember(myTotalList.getMember(clientIP));
+        myChatter=myTotalList.getMember(clientIP);
         
     }
     
@@ -33,6 +38,7 @@ public class Model {
         try{
             uc.logIn(myName, myPort);
             myTotalList= uc.getList();
+            //return myTotalList.getIsValid();
         }
         catch (Exception e){
             System.out.println("Fail to Connect");
@@ -65,7 +71,7 @@ public class Model {
     }
     
     public void clearChatRoomList(){
-        myChatRoomList.clearList();
+       myChatter=null;
     }
     
     public synchronized boolean isChatting(){
@@ -75,16 +81,16 @@ public class Model {
         isChatting=b;
     }
     
-    public void start(){
-        Iterator<Member> it=myChatRoomList.getMembers().iterator();
-        while(it.hasNext()){
-            TCPChatRoomClient tc= new TCPChatRoomClient(it.next(),this);
-            
-            myTCPClients.add(tc);
+    public boolean start(){
+        if(myChatter==null){
+            return false;
         }
+        myTCPClient = new TCPChatRoomClient(myChatter, this);
+
         myMessages.clear();
-        myChatRoomList.clearList();
-        isClient=true;
+        clearChatRoomList();
+        isClient = true;
+        return true;
         
         
     }
@@ -94,9 +100,7 @@ public class Model {
         fromUser=myName+" says: "+fromUser;
        
         if(isClient==true){
-            for(int i=0; i< myTCPClients.size();i++){
-                myTCPClients.get(i).send(fromUser);
-            }
+           myTCPClient.send(fromUser);
         }
         else{
             myTCPServer.send(fromUser);
@@ -104,12 +108,13 @@ public class Model {
     }
     
     public void TCPdisconnect(){
-        for(int i=0; i< myTCPClients.size();i++){
-            myTCPClients.get(i).quit();
-        }
-        //myTCPServer.quit();
-        myTCPClients.clear();
+       
+        myTCPClient.quit();
+
+        myTCPServer.quit();
+        myTCPClient = null;
         System.out.println("quited");
+        isClient = false;
     }
     
     public synchronized List<String> getMessages(){
@@ -117,5 +122,54 @@ public class Model {
         myMessages.clear();
         return result;
     }
+
+
+    public int ask (String who) {
+        AskThread at = new AskThread(who);
+
+        try {
+            SwingUtilities.invokeAndWait(at);
+        }
+        catch (InvocationTargetException e) {
+            
+            e.printStackTrace();
+        }
+        catch (InterruptedException e) {
+            
+            e.printStackTrace();
+        }
+        if(at.getFlag()==JOptionPane.YES_OPTION){
+            myController.showChatRoom();
+        }
+        return at.getFlag();
+
+    }
+    
+    private class AskThread implements Runnable {
+        private String who=null;
+        private int flag=-1;
+        public AskThread(String w){
+            who=w;
+            
+        }
+        @Override
+        public void run () {
+            flag=JOptionPane.showConfirmDialog(null, who+" invite you to chat, accept? ");
+            
+        }
+        
+        public int getFlag(){
+            return flag;
+        }
+    }
+
+     public void setController (Controller controller) {
+        myController = controller;
+        
+    }
+     
+     public String getName(){
+         return myName;
+     }
 
 }

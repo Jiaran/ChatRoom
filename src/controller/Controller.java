@@ -37,6 +37,8 @@ public class Controller {
         initialButtons();
         myClientWindow.getContentPane().add(new HalfScreen(myClientList, myButtons));
         myClientWindow.setLocation(200, 0);
+        myLogin.addWindowListener(new CloseChatRoom());
+        myClientWindow.addWindowListener(new CloseChatRoom());
     }
 
     private void initialButtons () {
@@ -71,6 +73,7 @@ public class Controller {
 
     public void login (String name) {
         myModel = new Model(name);
+        myModel.setController(this);
         myLogin.setVisible(false);
         
    
@@ -85,19 +88,34 @@ public class Controller {
 
    
     public void start () {
+       
+        if(myModel.start()){
+            showChatRoom();
+        }
+        else {
+            JOptionPane.showMessageDialog(null, "Please choose a member to chat");
+            return;
+        } 
+       
+    }
+    
+    public void showChatRoom(){
         myClientWindow.setVisible(false);
         myChatRoom = new MainFrame("ChatRoom");
-        myChatRoom.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+       
+        
         myChatRoom.addWindowListener(new BackToList());
         RunCode rc = new RunCode(this);
         myDisplay = new Display(this);
+        
+        
         HalfScreen screen = new HalfScreen(myDisplay, rc);
         myChatRoom.getContentPane().add(screen);
         myChatRoom.pack();
+        
+        
         myChatRoom.setLocation(200, 0);
         myChatRoom.setVisible(true);
-       
-        myModel.start();
     }
 
     private class BackToList extends WindowAdapter {
@@ -111,6 +129,16 @@ public class Controller {
            
         }
 
+    }
+    
+    private class CloseChatRoom extends WindowAdapter{
+        @Override
+        public void windowClosing (WindowEvent e) {
+            e.getWindow().dispose();
+            disconnect();
+            System.exit(0);
+           
+        }
     }
 
     private class ActionStart implements ActionListener {
@@ -163,6 +191,7 @@ public class Controller {
     
     public List<String> getMessages(){
         return myModel.getMessages();
+       
     }
-
+    
 }
