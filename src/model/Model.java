@@ -62,7 +62,7 @@ public class Model {
     public void logout(){
         UDPClient uc= new UDPClient();
         try{
-            uc.logOut();
+            uc.logOut(myName);
         }
         catch (Exception e){
             System.out.println("Fail to Connect");

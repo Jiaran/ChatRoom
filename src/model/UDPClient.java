@@ -7,8 +7,6 @@ public class UDPClient
 {
 	private static final int TIMEOUT=5000;
 	
-	private String myName;
-	
 	private MemberList friends;
 	
 	public MemberList getList(){
@@ -17,15 +15,14 @@ public class UDPClient
 	
 	public void logIn(String inputName, String inputPort) throws IOException{
 		if(inputName.equals(""))
-			UDPClientLog("refresh",myName,inputPort);
+			UDPClientLog("refresh","null",inputPort);
 		else{
-			myName=inputName;
 			UDPClientLog("login",inputName,inputPort);
 		}
 	}
 	
-	public void logOut() throws IOException{
-			UDPClientLog("logout",myName,"null");
+	public void logOut(String inputName) throws IOException{
+			UDPClientLog("logout",inputName,"null");
 	}
 	
 	public void UDPClientLog(String type, String inputName, String inputPort) throws IOException{
@@ -61,8 +58,8 @@ public class UDPClient
 			                            IPAddress, ServerPort);
 	
 			clientSocket.send(sendPacket);
-			if(type.equals("login")){
-				System.out.println("sending request");
+			if(!type.equals("logout")){
+				//System.out.println("sending request");
 		
 				DatagramPacket receivePacket =new DatagramPacket(receiveData, receiveData.length);
 		
@@ -72,7 +69,7 @@ public class UDPClient
 				
 				friends=pp.getList(receiveList);
 				
-				System.out.println("get friends list.");
+				//System.out.println("get friends list.");
 			}
 			clientSocket.close();
 		}

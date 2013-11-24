@@ -132,19 +132,19 @@ public class UDPprotocal {
       			Set<String> list=totalList.getList();
 			     Iterator<String> it=list.iterator();
 			         
-			     String sendString=String.valueOf(totalList.getNumber());
-			     sendString+="%";
+			     String returnString=String.valueOf(totalList.getNumber());
+			     returnString+="%";
 			         
 			     while(it.hasNext()){
 			    	 Member returnMember=totalList.getMember(it.next());
-			    	 sendString+=returnMember.getName();
-			    	 sendString+=String.valueOf('#');
-			    	 sendString+=returnMember.getIP();
-			    	 sendString+=String.valueOf('#');
-			    	 sendString+=returnMember.getPort();
-			    	 sendString+=String.valueOf('%');
+			    	 returnString+=returnMember.getName();
+			    	 returnString+=String.valueOf('#');
+			    	 returnString+=returnMember.getIP();
+			    	 returnString+=String.valueOf('#');
+			    	 returnString+=returnMember.getPort();
+			    	 returnString+=String.valueOf('%');
 			    	 }
-			     return sendString;
+			     return returnString;
       		 }
       	 }
        	 else{
