@@ -98,6 +98,10 @@ public class TCPChatRoomServer implements Runnable{
     }
     
     public void quit () {
+        out.println("EXIT");
+    }
+    
+    private void exit(){
         try {
             if (out != null){
                 out.println(myModel.getName()+" left the chat room");
@@ -144,13 +148,17 @@ public class TCPChatRoomServer implements Runnable{
                 if (myModel.ask(inputLine) == JOptionPane.YES_OPTION) {
                     out.println("Yes");
                     while ((inputLine = in.readLine()) != null) {
+                        if(inputLine.equals("EXIT")){
+                            out.println("EXIT");
+                            break;
+                        }
                         myModel.addMessage(inputLine);
                     }
                    
 
                 }
                 
-                quit();
+                exit();
                 System.out.println("server down");
                 clientSocket = null;
             }

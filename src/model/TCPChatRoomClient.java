@@ -79,7 +79,7 @@ public class TCPChatRoomClient {
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(
                                     new InputStreamReader(socket.getInputStream()));
-            out.println(clientName);
+            out.println(myModel.getName());
             new Thread(new TCPListeningThread()).start();
             
            
@@ -98,12 +98,16 @@ public class TCPChatRoomClient {
     }
     
     public synchronized void quit () {
+        out.println("EXIT");
+    }
+    
+    public void exit(){
         try {
             if(out!=null){
                 out.println(clientName+" left the chat room");
             }
             if (socket != null) {
-                socket.shutdownInput();
+                
                 socket.shutdownOutput();
             }
             if (in != null)
@@ -121,7 +125,6 @@ public class TCPChatRoomClient {
             e.printStackTrace();
         }
     }
-    
    
     class TCPListeningThread implements Runnable{
 
@@ -139,11 +142,13 @@ public class TCPChatRoomClient {
                 
                 
                 while ((fromServer = in.readLine()) != null) {
-                    
+                    if(fromServer.equals("EXIT")){
+                        break;
+                    }
                     myModel.addMessage(fromServer);
 
                 }
-                quit();
+                exit();
             }
             catch (IOException e) {
                 System.out.println(in);

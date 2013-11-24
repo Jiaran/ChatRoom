@@ -50,7 +50,7 @@ public class ClientList extends GUISection implements View {
             
             tempText.setMinimumSize(new Dimension(150, ITEM_HEIGHT));
             JButton button = new JButton(buttonName);
-            button.addActionListener(new ActionAdd(m.getIP()));
+            button.addActionListener(new ActionAdd(m.getName()));
             button.setPreferredSize(new Dimension(80, ITEM_HEIGHT));
             button.setMinimumSize(new Dimension(80, ITEM_HEIGHT));
             GridBagConstraints c = new GridBagConstraints();
@@ -78,15 +78,15 @@ public class ClientList extends GUISection implements View {
     }
     
     private class ActionAdd implements ActionListener{
-        private String clientIP="";
-        private ActionAdd(String ip){
-            clientIP=ip;
+        private String clientName="";
+        private ActionAdd(String name){
+            clientName=name;
         }
             
         @Override
         public void actionPerformed (ActionEvent arg0) {
-            System.out.println(clientIP);
-            myController.addClientToChatRoom(clientIP);
+            System.out.println(clientName);
+            myController.addClientToChatRoom(clientName);
             
         }
         

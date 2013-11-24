@@ -27,9 +27,9 @@ public class Model {
     }
     
     
-    public void addClientToChatRoom (String clientIP) {
+    public void addClientToChatRoom (String clientName) {
         
-        myChatter=myTotalList.getMember(clientIP);
+        myChatter=myTotalList.getMember(clientName);
         
     }
     
