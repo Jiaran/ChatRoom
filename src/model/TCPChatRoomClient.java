@@ -98,7 +98,8 @@ public class TCPChatRoomClient {
     }
     
     public synchronized void quit () {
-        out.println("EXIT");
+        if(out!=null)
+            out.println("EXIT");
     }
     
     public void exit(){
@@ -143,6 +144,7 @@ public class TCPChatRoomClient {
                 
                 while ((fromServer = in.readLine()) != null) {
                     if(fromServer.equals("EXIT")){
+                        out.println("EXIT");
                         break;
                     }
                     myModel.addMessage(fromServer);

@@ -98,6 +98,7 @@ public class TCPChatRoomServer implements Runnable{
     }
     
     public void quit () {
+        if(out!=null)
         out.println("EXIT");
     }
     
