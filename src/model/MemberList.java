@@ -7,13 +7,23 @@ import java.util.Set;
 
 public class MemberList {
     private HashMap<String, Member> totalList;
+    
+    private Boolean isValid;
+    
+    public void setIsValid(Boolean type){
+    	isValid=type;
+    }
+    
+    public Boolean getIsValid(){
+    	return isValid;
+    }
 
     public MemberList () {
         totalList = new HashMap<String, Member>();
     }
     
-    public boolean hasIP(String ipNumber){
-    	if (totalList.containsKey(ipNumber))
+    public boolean hasName(String name){
+    	if (totalList.containsKey(name))
     		return true;
     	else
     		return false;
@@ -26,7 +36,7 @@ public class MemberList {
         }
         else {
             Member add = new Member(memberName, memberIP, memberPort);
-            totalList.put(memberIP, add);
+            totalList.put(memberName, add);
 
             System.out.println(memberName + " has joined.");
         }
@@ -34,7 +44,7 @@ public class MemberList {
 
     public void addMember (Member m) {
 
-        totalList.put(m.getIP(), m);
+        totalList.put(m.getName(), m);
 
     }
 
@@ -50,8 +60,8 @@ public class MemberList {
         return totalList.keySet();
     }
 
-    public Member getMember (String ipString) {
-        return totalList.get(ipString);
+    public Member getMember (String name) {
+        return totalList.get(name);
     }
 
     public void removeMember (String member) {

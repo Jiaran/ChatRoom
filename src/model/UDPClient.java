@@ -7,6 +7,8 @@ public class UDPClient
 {
 	private static final int TIMEOUT=5000;
 	
+	private String myName;
+	
 	private MemberList friends;
 	
 	public MemberList getList(){
@@ -14,11 +16,12 @@ public class UDPClient
 	}
 	
 	public void logIn(String inputName, String inputPort) throws IOException{
+		myName=inputName;
 		UDPClientLog("login",inputName,inputPort);
 	}
 	
 	public void logOut() throws IOException{
-			UDPClientLog("logout","null","null");
+			UDPClientLog("logout",myName,"null");
 	}
 	
 	public void UDPClientLog(String type, String inputName, String inputPort) throws IOException{
@@ -26,6 +29,8 @@ public class UDPClient
 
 		DatagramSocket clientSocket = new DatagramSocket();
 		clientSocket.setSoTimeout(TIMEOUT); 
+		
+		//InetAddress IPAddress=InetAddress.getByName("152.3.43.164");
 
 		InetAddress IPAddress = InetAddress.getLocalHost();
 		//replace it with true server name
