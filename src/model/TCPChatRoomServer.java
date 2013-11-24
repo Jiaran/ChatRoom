@@ -102,13 +102,16 @@ public class TCPChatRoomServer implements Runnable{
             if (out != null){
                 out.println(myModel.getName()+" left the chat room");
                 out.close();
+                
             }
             if (in != null)
                 in.close();
-            if (clientSocket != null){
+            if (clientSocket != null && !clientSocket.isClosed()){
                 clientSocket.shutdownOutput();
                 clientSocket.close();
             }
+            out=null;
+            in=null;
             clientSocket = null;
         }
         catch (Exception e) {
