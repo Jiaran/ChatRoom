@@ -210,9 +210,7 @@ public class TCPChatRoomServer implements Runnable{
             }
          
             
-            finally {
-                myModel.setIsChatting(false);
-            }
+            
 
         }
     }

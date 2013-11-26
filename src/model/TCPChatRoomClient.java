@@ -132,7 +132,7 @@ public class TCPChatRoomClient {
             out = null;
             in = null;
             socket = null;
-            myModel.setIsChatting(false);
+            
         }
         catch (IOException e) {
             e.printStackTrace();
