@@ -125,6 +125,7 @@ public class Controller {
             e.getWindow().dispose();
             
             myModel.TCPdisconnect();
+            refresh(); 
             myClientWindow.setVisible(true);
            
         }

@@ -37,6 +37,8 @@ import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import controller.Controller;
@@ -48,6 +50,9 @@ public class TCPChatRoomServer implements Runnable{
     private BufferedReader in=null;
     private ServerSocket serverSocket=null;
     private Socket clientSocket=null;
+    private int myUniqueID=0;
+    private Map<Integer, Long> mySendTime= new HashMap<Integer, Long>();
+    
     public TCPChatRoomServer(Model m){
         myModel=m;
         try {
@@ -87,13 +92,19 @@ public class TCPChatRoomServer implements Runnable{
     
     public void send(String fromUser) {
        
+        
+        
         if(out==null){
+            
             myModel.addMessage("Sorry, your friend left");
             return;
         }
         if (fromUser != null) {
+           
+            out.println(myUniqueID+"%"+fromUser);
+            myModel.addToRTTMap(myUniqueID, fromUser);
+            myUniqueID++;
             
-            out.println(fromUser);
         }
     }
     
@@ -118,6 +129,7 @@ public class TCPChatRoomServer implements Runnable{
             out=null;
             in=null;
             clientSocket = null;
+            mySendTime.clear();
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -153,6 +165,17 @@ public class TCPChatRoomServer implements Runnable{
                             out.println("EXIT");
                             break;
                         }
+                        if(inputLine.matches("RECEIVE\\d*")){
+                            String uniqueIDString=inputLine.substring(6);
+                            int uniqueID= Integer.parseInt(uniqueIDString);
+                            long sendTime= mySendTime.get(uniqueID);
+                            long rtt= System.currentTimeMillis()-sendTime;
+                            myModel.addRTT(uniqueID, rtt);
+                            continue;
+                        }
+                        String[] temp=inputLine.split("%", 2);
+                        out.println("RECEIVE"+temp[0]);
+                        inputLine=temp[1];
                         myModel.addMessage(inputLine);
                     }
                    

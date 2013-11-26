@@ -36,17 +36,21 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.net.SocketAddress;
 import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.Map;
  
 public class TCPChatRoomClient {
     private String hostName="localhost";
     private String clientName="";
     private int portNumber = 10000;
     private Model myModel=null;
-    PrintWriter out=null;
-    BufferedReader in=null;
-    Socket socket=null;
+    private PrintWriter out=null;
+    private BufferedReader in=null;
+    private Socket socket=null;
+    private int myUniqueID=0;
+    private Map<Integer, Long> mySendTime= new HashMap<Integer, Long>();
+    
     public TCPChatRoomClient(Model model){
         myModel=model;
     }
@@ -65,8 +69,11 @@ public class TCPChatRoomClient {
             return;
         }
         if (fromUser != null) {
+           
+            out.println(myUniqueID+"%"+fromUser);
+            myModel.addToRTTMap(myUniqueID, fromUser);
+            myUniqueID++;
             
-            out.println(fromUser);
         }
     }
     
@@ -146,7 +153,19 @@ public class TCPChatRoomClient {
                     if(fromServer.equals("EXIT")){
                         out.println("EXIT");
                         break;
+                        
                     }
+                    if(fromServer.matches("RECEIVE\\d*")){
+                        String uniqueIDString=fromServer.substring(6);
+                        int uniqueID= Integer.parseInt(uniqueIDString);
+                        long sendTime= mySendTime.get(uniqueID);
+                        long rtt= System.currentTimeMillis()-sendTime;
+                        myModel.addRTT(uniqueID, rtt);
+                        continue;
+                    }
+                    String[] temp=fromServer.split("%", 2);
+                    out.println("RECEIVE"+temp[0]);
+                    fromServer=temp[1];
                     myModel.addMessage(fromServer);
 
                 }

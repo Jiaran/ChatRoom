@@ -74,6 +74,7 @@ public class ClientList extends GUISection implements View {
         removeAll();
         createGUI(myOnlineClients.getMembers());
         revalidate();
+        repaint();
 
     }
     

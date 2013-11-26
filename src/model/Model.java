@@ -2,8 +2,9 @@ package model;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import controller.Controller;
@@ -20,7 +21,7 @@ public class Model {
     private TCPChatRoomClient myTCPClient= null;
     private List<String> myMessages= new ArrayList<String>();
     private Controller myController;
-    
+    private Map<Integer,String> myRTTMap= new HashMap<Integer,String>();
     public Model(String name){
         myName=name;
         new Thread(myTCPServer).start();
@@ -42,6 +43,7 @@ public class Model {
         }
         catch (Exception e){
             System.out.println("Fail to Connect");
+            JOptionPane.showMessageDialog(null, "Fail to Connect to the Server");
             System.exit(0);
         }
     }
@@ -184,5 +186,16 @@ public class Model {
      public String getName(){
          return myName;
      }
+     
+     public void addToRTTMap(int uniqueID, String content){
+         myRTTMap.put(uniqueID, content);
+     }
+     public void addRTT(int uniqueID, long rtt){
+         String content=myRTTMap.get(uniqueID);
+         content= content + " ::::this message's round trip time is "+rtt;
+         System.out.println(content);
+         myRTTMap.put(uniqueID, content);
+     }
+     
 
 }
