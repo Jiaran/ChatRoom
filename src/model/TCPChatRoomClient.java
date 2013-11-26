@@ -114,7 +114,7 @@ public class TCPChatRoomClient {
     public void exit(){
         try {
             if(out!=null){
-                out.println(clientName+" left the chat room");
+                out.println("NOREPLY%"+clientName+" left the chat room");
             }
             if (socket != null) {
                 
@@ -130,6 +130,7 @@ public class TCPChatRoomClient {
             out = null;
             in = null;
             socket = null;
+            myModel.setIsChatting(false);
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -146,7 +147,7 @@ public class TCPChatRoomClient {
                 
                 isAccept= in.readLine();
                 if(isAccept==null ||!isAccept.equals("Yes") ){
-                    quit();
+                    exit();
                     return;
                 }
                 
@@ -167,7 +168,12 @@ public class TCPChatRoomClient {
                         myModel.addRTT(uniqueID, rtt);
                         continue;
                     }
-                    
+                    if(fromServer.matches("NOREPLY*")){
+                        String[] temp=fromServer.split("%", 2);
+                        fromServer=temp[1];
+                        myModel.addMessage(fromServer);
+                        continue;
+                    }
                     String[] temp=fromServer.split("%", 2);
                     System.out.println(temp[0]);
                     out.println("RECEIVE"+temp[0]);

@@ -194,7 +194,7 @@ public class Model {
      }
      public void addRTT(int uniqueID, long rtt){
          String content=myRTTMap.get(uniqueID);
-         content= content + " ::::this message's round trip time is "+rtt;
+         content= content + " ::::this message's round trip time is "+rtt+"ms";
          System.out.println(content);
          myRTTMap.put(uniqueID, content);
      }

@@ -74,6 +74,8 @@ public class TCPChatRoomServer implements Runnable{
                     
                     System.out.println("get Socket");
                     if (myModel.isChatting()) {
+                        PrintWriter temp =new PrintWriter(clientSocket.getOutputStream(), true);
+                        temp.println("NO");
                         clientSocket.close();
                         return;
                     }
@@ -119,7 +121,7 @@ public class TCPChatRoomServer implements Runnable{
     private void exit(){
         try {
             if (out != null){
-                out.println(myModel.getName()+" left the chat room");
+                out.println("NOREPLY%"+myModel.getName()+" left the chat room");
                 out.close();
                 
             }
@@ -133,6 +135,7 @@ public class TCPChatRoomServer implements Runnable{
             in=null;
             clientSocket = null;
             mySendTime.clear();
+           
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -174,6 +177,12 @@ public class TCPChatRoomServer implements Runnable{
                             long sendTime= mySendTime.get(uniqueID);
                             long rtt= System.currentTimeMillis()-sendTime;
                             myModel.addRTT(uniqueID, rtt);
+                            continue;
+                        }
+                        if(inputLine.matches("NOREPLY*")){
+                            String[] temp=inputLine.split("%", 2);
+                            inputLine=temp[1];
+                            myModel.addMessage(inputLine);
                             continue;
                         }
                         System.out.println(inputLine);
