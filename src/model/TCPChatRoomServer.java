@@ -39,8 +39,10 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+
 import controller.Controller;
 
 public class TCPChatRoomServer implements Runnable{
@@ -101,8 +103,9 @@ public class TCPChatRoomServer implements Runnable{
         }
         if (fromUser != null) {
            
-            out.println(myUniqueID+"%"+fromUser);
+        	out.println(myUniqueID+"%"+fromUser);
             myModel.addToRTTMap(myUniqueID, fromUser);
+            mySendTime.put(myUniqueID, System.currentTimeMillis());
             myUniqueID++;
             
         }
@@ -166,13 +169,14 @@ public class TCPChatRoomServer implements Runnable{
                             break;
                         }
                         if(inputLine.matches("RECEIVE\\d*")){
-                            String uniqueIDString=inputLine.substring(6);
+                            String uniqueIDString=inputLine.substring(7);
                             int uniqueID= Integer.parseInt(uniqueIDString);
                             long sendTime= mySendTime.get(uniqueID);
                             long rtt= System.currentTimeMillis()-sendTime;
                             myModel.addRTT(uniqueID, rtt);
                             continue;
                         }
+                        System.out.println(inputLine);
                         String[] temp=inputLine.split("%", 2);
                         out.println("RECEIVE"+temp[0]);
                         inputLine=temp[1];
