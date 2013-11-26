@@ -150,20 +150,23 @@ public class TCPChatRoomClient {
                 
                 
                 while ((fromServer = in.readLine()) != null) {
+                    System.out.println(fromServer);
                     if(fromServer.equals("EXIT")){
                         out.println("EXIT");
                         break;
                         
                     }
                     if(fromServer.matches("RECEIVE\\d*")){
-                        String uniqueIDString=fromServer.substring(6);
+                        String uniqueIDString=fromServer.substring(7);
                         int uniqueID= Integer.parseInt(uniqueIDString);
                         long sendTime= mySendTime.get(uniqueID);
                         long rtt= System.currentTimeMillis()-sendTime;
                         myModel.addRTT(uniqueID, rtt);
                         continue;
                     }
+                    
                     String[] temp=fromServer.split("%", 2);
+                    System.out.println(temp[0]);
                     out.println("RECEIVE"+temp[0]);
                     fromServer=temp[1];
                     myModel.addMessage(fromServer);
