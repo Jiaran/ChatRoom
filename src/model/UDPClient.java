@@ -34,7 +34,7 @@ public class UDPClient
 		//InetAddress IPAddress=InetAddress.getByName("152.3.43.164");
 
 		InetAddress IPAddress = InetAddress.getLocalHost();
-		IPAddress = InetAddress.getByName("10.190.82.91");
+		//IPAddress = InetAddress.getByName("10.190.82.91");
 		//replace it with true server name
 		
 		byte[] sendData;
@@ -56,7 +56,9 @@ public class UDPClient
 	
 			DatagramPacket sendPacket =new DatagramPacket(sendData, sendData.length,
 			                            IPAddress, ServerPort);
-	
+			
+			long beginTime = System.currentTimeMillis();
+			
 			clientSocket.send(sendPacket);
 			if(!type.equals("logout")){
 				//System.out.println("sending request");
@@ -64,6 +66,11 @@ public class UDPClient
 				DatagramPacket receivePacket =new DatagramPacket(receiveData, receiveData.length);
 		
 				clientSocket.receive(receivePacket);
+				
+				long endTime=System.currentTimeMillis();
+
+				long costTime = (endTime - beginTime)/1000;
+				System.out.print("The RRT is "+String.valueOf(costTime));
 		
 				String receiveList = new String(receivePacket.getData(),0, receivePacket.getLength());
 				

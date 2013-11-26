@@ -121,9 +121,10 @@ public class Model {
     }
     
     public void TCPdisconnect(){
-       
-        myTCPClient.quit();
-
+    	System.out.println(isClient);
+    	if(isClient)
+    		myTCPClient.quit();
+    	
         myTCPServer.quit();
         myTCPClient = null;
         System.out.println("quited");
