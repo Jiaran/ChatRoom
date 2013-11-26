@@ -71,6 +71,7 @@ public class TCPChatRoomClient {
         if (fromUser != null) {
            
             out.println(myUniqueID+"%"+fromUser);
+            System.out.println(myUniqueID+"%"+fromUser);
             myModel.addToRTTMap(myUniqueID, fromUser);
             mySendTime.put(myUniqueID, System.currentTimeMillis());
             myUniqueID++;
@@ -151,6 +152,7 @@ public class TCPChatRoomClient {
                 
                 
                 while ((fromServer = in.readLine()) != null) {
+                    
                     System.out.println(fromServer);
                     if(fromServer.equals("EXIT")){
                         out.println("EXIT");

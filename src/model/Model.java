@@ -111,6 +111,7 @@ public class Model {
     }
     
     public void send(String fromUser){
+        fromUser=fromUser.replace('\n', ' ');
         addMessage("I says: "+fromUser);
         fromUser=myName+" says: "+fromUser;
        
