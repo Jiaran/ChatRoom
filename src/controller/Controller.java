@@ -129,6 +129,7 @@ public class Controller {
             e.getWindow().dispose();
             
             myModel.TCPdisconnect();
+            myModel.setIsChatting(false);
             refresh(); 
             myClientWindow.setVisible(true);
            
@@ -141,7 +142,7 @@ public class Controller {
         public void windowClosing (WindowEvent e) {
             e.getWindow().dispose();
             disconnect();
-            myModel.setIsChatting(false);
+           
             System.exit(0);
            
         }
