@@ -126,10 +126,11 @@ public class Controller {
 
         @Override
         public void windowClosing (WindowEvent e) {
+            
             e.getWindow().dispose();
             
             myModel.TCPdisconnect();
-            myModel.setIsChatting(false);
+            myDisplay.stop();
             refresh(); 
             myClientWindow.setVisible(true);
            
@@ -141,6 +142,7 @@ public class Controller {
         @Override
         public void windowClosing (WindowEvent e) {
             e.getWindow().dispose();
+           
             disconnect();
            
             System.exit(0);

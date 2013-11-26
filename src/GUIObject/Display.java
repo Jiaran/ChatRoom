@@ -37,6 +37,7 @@ public class Display extends JTextArea implements ActionListener,View {
 
     @Override
     public void actionPerformed (ActionEvent e) {
+        System.out.println("called");
         getMessagesAndDisplay();
         repaint();
         
@@ -61,6 +62,11 @@ public class Display extends JTextArea implements ActionListener,View {
             append(m.get(i));
             append("\n");
         }
+        
+    }
+    
+    public void stop(){
+        timer.stop();
         
     }
 

@@ -78,7 +78,7 @@ public class TCPChatRoomServer implements Runnable{
                         temp.println("NO");
                         System.out.println("no accept");
                         clientSocket.close();
-                        return;
+                        
                     }
                     else {
                         myModel.setIsChatting(true);
