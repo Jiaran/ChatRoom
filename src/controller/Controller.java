@@ -1,5 +1,6 @@
 package controller;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -9,6 +10,7 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import model.Model;
 import GUIObject.ClientList;
@@ -107,9 +109,11 @@ public class Controller {
         myChatRoom.addWindowListener(new BackToList());
         RunCode rc = new RunCode(this);
         myDisplay = new Display(this);
+        JScrollPane paneScrollPane = new JScrollPane(myDisplay);
+        paneScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        paneScrollPane.setPreferredSize(new Dimension(400,450));
         
-        
-        HalfScreen screen = new HalfScreen(myDisplay, rc);
+        HalfScreen screen = new HalfScreen(paneScrollPane, rc);
         myChatRoom.getContentPane().add(screen);
         myChatRoom.pack();
         
