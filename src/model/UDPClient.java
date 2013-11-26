@@ -69,8 +69,8 @@ public class UDPClient
 				
 				long endTime=System.currentTimeMillis();
 
-				long costTime = (endTime - beginTime)/1000;
-				System.out.print("The RRT is "+String.valueOf(costTime));
+				long costTime = (endTime - beginTime);
+				System.out.print("The RRT is "+String.valueOf(costTime)+" ms");
 		
 				String receiveList = new String(receivePacket.getData(),0, receivePacket.getLength());
 				
