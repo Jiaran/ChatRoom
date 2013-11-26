@@ -153,7 +153,7 @@ public class TCPChatRoomClient {
                     return;
                 }
                 
-                
+                myModel.setIsChatting(true);
                 while ((fromServer = in.readLine()) != null) {
                     
                     System.out.println(fromServer);

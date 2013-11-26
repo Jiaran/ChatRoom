@@ -76,6 +76,7 @@ public class TCPChatRoomServer implements Runnable{
                     if (myModel.isChatting()) {
                         PrintWriter temp =new PrintWriter(clientSocket.getOutputStream(), true);
                         temp.println("NO");
+                        System.out.println("no accept");
                         clientSocket.close();
                         return;
                     }
@@ -181,7 +182,7 @@ public class TCPChatRoomServer implements Runnable{
                             myModel.addRTT(uniqueID, rtt);
                             continue;
                         }
-                        if(inputLine.matches("NOREPLY*")){
+                        if(inputLine.matches("NOREPLY.*")){
                             String[] temp=inputLine.split("%", 2);
                             inputLine=temp[1];
                             myModel.addMessage(inputLine);
