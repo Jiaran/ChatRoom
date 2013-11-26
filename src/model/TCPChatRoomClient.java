@@ -72,6 +72,7 @@ public class TCPChatRoomClient {
            
             out.println(myUniqueID+"%"+fromUser);
             myModel.addToRTTMap(myUniqueID, fromUser);
+            mySendTime.put(myUniqueID, System.currentTimeMillis());
             myUniqueID++;
             
         }
