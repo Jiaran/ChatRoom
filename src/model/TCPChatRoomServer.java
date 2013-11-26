@@ -114,14 +114,16 @@ public class TCPChatRoomServer implements Runnable{
     }
     
     public void quit () {
-        if(out!=null)
-        out.println("EXIT");
+        if (out != null) {
+            out.println("NOREPLY%" + myModel.getName() + " left the chat room");
+            out.println("EXIT");
+        }
     }
     
     private void exit(){
         try {
             if (out != null){
-                out.println("NOREPLY%"+myModel.getName()+" left the chat room");
+                
                 out.close();
                 
             }

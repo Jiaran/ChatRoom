@@ -107,15 +107,16 @@ public class TCPChatRoomClient {
     }
     
     public synchronized void quit () {
-        if(out!=null)
+        if(out!=null){
+            
+            out.println("NOREPLY%"+clientName+" left the chat room");
             out.println("EXIT");
+        }
     }
     
     public void exit(){
         try {
-            if(out!=null){
-                out.println("NOREPLY%"+clientName+" left the chat room");
-            }
+            
             if (socket != null) {
                 
                 socket.shutdownOutput();
@@ -123,8 +124,9 @@ public class TCPChatRoomClient {
             if (in != null)
                 in.close();
             
-            if (out != null)
+            if (out != null){
                 out.close();
+            }
             
             
             out = null;
