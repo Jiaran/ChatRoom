@@ -170,7 +170,7 @@ public class TCPChatRoomClient {
                         myModel.addRTT(uniqueID, rtt);
                         continue;
                     }
-                    if(fromServer.matches("NOREPLY*")){
+                    if(fromServer.matches("NOREPLY.*")){
                         String[] temp=fromServer.split("%", 2);
                         fromServer=temp[1];
                         myModel.addMessage(fromServer);
