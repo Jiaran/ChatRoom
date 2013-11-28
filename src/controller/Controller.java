@@ -130,6 +130,7 @@ public class Controller {
             e.getWindow().dispose();
             
             myModel.TCPdisconnect();
+            myModel.setIsChatting(false);
             myDisplay.stop();
             refresh(); 
             myClientWindow.setVisible(true);
