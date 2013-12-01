@@ -3,6 +3,7 @@ package GUIObject;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 
@@ -23,10 +24,15 @@ public class HalfScreen extends JPanel {
         this.setLayout(new BorderLayout());
         JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
                                               section1, section2);
-      
         splitPane.setPreferredSize(new Dimension(400, 600));
-        add(splitPane);
+        
+        add(splitPane,BorderLayout.CENTER);
         setVisible(true);
+    }
+    
+    public void addNewButton(JButton button){
+        add(button,BorderLayout.SOUTH);
+       
     }
 
 }

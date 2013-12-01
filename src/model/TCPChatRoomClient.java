@@ -40,6 +40,13 @@ import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
  
+/**
+ * @author Jiaran
+ *  created when user invite somebody to chat room. First it will ask if the other side
+ *  wants to chat. If so, connection is established. Otherwise, it will just told the user
+ *  your friend is offline. 
+ *
+ */
 public class TCPChatRoomClient {
     private String hostName="localhost";
     private String clientName="";

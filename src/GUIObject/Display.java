@@ -19,8 +19,8 @@ public class Display extends JTextArea implements ActionListener,View {
     private final int DEFAULT_HEIGHT = 450;
     private int DEFAULT_PERIOD = 60;
     private Timer timer = new Timer(DEFAULT_PERIOD, this);
-    private Controller myController=null;
-    private List<String> myMessages=null;
+    protected Controller myController=null;
+    protected List<String> myMessages=null;
     
     public Display (Controller c) {
         myController=c;
@@ -37,7 +37,7 @@ public class Display extends JTextArea implements ActionListener,View {
 
     @Override
     public void actionPerformed (ActionEvent e) {
-        System.out.println("called");
+        
         getMessagesAndDisplay();
         repaint();
         
@@ -57,7 +57,9 @@ public class Display extends JTextArea implements ActionListener,View {
 
 
 
-    private void appendAll (List<String> m) {
+    protected void appendAll (List<String> m) {
+        if(m==null)
+            return;
         for(int i=0; i<m.size();i++){
             append(m.get(i));
             append("\n");

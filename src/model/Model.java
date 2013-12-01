@@ -3,15 +3,28 @@ package model;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import controller.Controller;
 
+/**
+ * @author Jiaran
+ *      Model handles all the data management. It keeps one listening socket to receive 
+ *      connection with other user . Also it can establish its own socket to communicate
+ *      with others. So one model can be both accept others chat invitation or invite others
+ *      to chat. To be simple, we this client is chatting with other peers, it will automatically
+ *      turn down invitations. However, it's easy to modify it to handle multiple chat. But 
+ *      there's no point as we don't have many clients online at the same time.
+ */
 public class Model {
     
     private String myPort="10001";
+    private String myUDPServerAdrress= "localhost";
     private String myName="";
     private MemberList myTotalList= null;
     private Member myChatter=null;
@@ -24,6 +37,7 @@ public class Model {
     private Map<Integer,String> myRTTMap= new HashMap<Integer,String>();
     public Model(String name){
         myName=name;
+        myPort= myTCPServer.getPort().toString();
         new Thread(myTCPServer).start();
     }
     
@@ -39,12 +53,16 @@ public class Model {
         try{
             uc.logIn(myName, myPort);
             myTotalList= uc.getList();
-            //return myTotalList.getIsValid();
+            if(!myTotalList.getIsValid()){
+                JOptionPane.showMessageDialog(null, "Name is occupied");
+                System.exit(0);
+            }
         }
         catch (Exception e){
             System.out.println("Fail to Connect");
             JOptionPane.showMessageDialog(null, "Fail to Connect to the Server");
             System.exit(0);
+           
         }
     }
     
@@ -195,8 +213,22 @@ public class Model {
      public void addRTT(int uniqueID, long rtt){
          String content=myRTTMap.get(uniqueID);
          content= content + " ::::this message's round trip time is "+rtt+"ms";
-         System.out.println(content);
+         
          myRTTMap.put(uniqueID, content);
+     }
+     
+     public List< String> getRTT(){
+         List<String> result= new ArrayList<String>();
+        
+         Set<Entry<Integer,String>> set=myRTTMap.entrySet();
+         Iterator<Entry<Integer,String>> it = set.iterator();
+         while(it.hasNext()){
+             Entry<Integer,String> entry= it.next();
+             result.add(entry.getValue());
+         }
+         myRTTMap.clear();
+         return result;
+         
      }
      
 

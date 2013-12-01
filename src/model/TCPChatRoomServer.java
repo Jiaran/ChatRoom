@@ -45,8 +45,13 @@ import javax.swing.SwingUtilities;
 
 import controller.Controller;
 
+/**
+ * @author Jiaran
+ * This thread is running as a background process. Waiting for other people to contact 
+ * just as the real chatting software.
+ */
 public class TCPChatRoomServer implements Runnable{
-    int portNumber = 10001;
+    
     private Model myModel=null;
     private PrintWriter out=null;
     private BufferedReader in=null;
@@ -58,12 +63,13 @@ public class TCPChatRoomServer implements Runnable{
     public TCPChatRoomServer(Model m){
         myModel=m;
         try {
-            serverSocket = new ServerSocket(portNumber);
+            serverSocket = new ServerSocket(0);
             
         }
         catch(Exception e){
             e.printStackTrace();
         }
+        
     }
     public void run()   {
         while(true){
@@ -204,7 +210,7 @@ public class TCPChatRoomServer implements Runnable{
             }
             catch (IOException e) {
                 System.out.println("Exception caught when trying to listen on port "
-                                   + portNumber + " or listening for a connection");
+                                    + " or listening for a connection");
                 System.out.println(e.getMessage());
                 e.printStackTrace();
             }
@@ -213,5 +219,9 @@ public class TCPChatRoomServer implements Runnable{
             
 
         }
+    }
+    
+    public Integer getPort(){
+        return serverSocket.getLocalPort();
     }
 }

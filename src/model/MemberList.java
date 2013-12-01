@@ -8,13 +8,13 @@ import java.util.Set;
 public class MemberList {
     private HashMap<String, Member> totalList;
     
-    private Boolean isValid;
+    private boolean isValid;
     
     public void setIsValid(Boolean type){
     	isValid=type;
     }
     
-    public Boolean getIsValid(){
+    public boolean getIsValid(){
     	return isValid;
     }
 
