@@ -28,7 +28,7 @@ public class UDPServer
 
             String sendString = pp.inputAdd(receiveMember);
 
-            if (!sendString.contains("%")) {
+            if ((!sendString.contains("%")) & (!sendString.equals("same name"))) {
                 System.out.print(sendString + " has left");
             }
             else {

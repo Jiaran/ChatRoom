@@ -10,7 +10,7 @@ public class UDPprotocal {
     MemberList totalList=new MemberList();
     
     public MemberList getList(String list){
-    	if(list=="same name#"){
+    	if(list.equals("same name")){
     		totalList.setIsValid(false);
     		return totalList;
     	}
@@ -86,7 +86,8 @@ public class UDPprotocal {
 	       		 String portNumber = memberData[3];
 	       		 
 	       		 if(totalList.hasName(name)){
-	       			 return "same name%";
+	       			 System.out.print("got a same name");
+	       			 return "same name";
 	       		 }
 	       		 else{
 	       			 totalList.addMember(name, ipAddress, portNumber);
