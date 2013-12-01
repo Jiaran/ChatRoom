@@ -9,6 +9,12 @@ public class UDPClient
 	
 	private MemberList friends;
 	
+	private String serverAddress;
+	
+	public void UDPClient(String serverIP){
+		serverAddress=serverIP;
+	}
+	
 	public MemberList getList(){
 		return friends;
 	}
@@ -26,14 +32,14 @@ public class UDPClient
 	}
 	
 	public void UDPClientLog(String type, String inputName, String inputPort) throws IOException{
-		int ServerPort=8888;
+		int ServerPort=9876;
 
 		DatagramSocket clientSocket = new DatagramSocket();
 		clientSocket.setSoTimeout(TIMEOUT); 
 		
 		//InetAddress IPAddress=InetAddress.getByName("152.3.43.164");
 
-		InetAddress IPAddress = InetAddress.getLocalHost();
+		InetAddress IPAddress = InetAddress.getByName(serverAddress);
 		//IPAddress = InetAddress.getByName("10.190.144.128");
 		//replace it with true server name
 		
