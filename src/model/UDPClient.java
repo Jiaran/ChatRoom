@@ -7,12 +7,18 @@ public class UDPClient
 {
 	private static final int TIMEOUT=5000;
 	
+	private boolean isValid;
+	
 	private MemberList friends;
 	
 	private String serverAddress;
 	
 	public UDPClient(String serverIP){
 		serverAddress=serverIP;
+	}
+	
+	public boolean getIsValid(){
+		return isValid;
 	}
 	
 	public MemberList getList(){
@@ -80,8 +86,12 @@ public class UDPClient
 		
 				String receiveList = new String(receivePacket.getData(),0, receivePacket.getLength());
 				
-				friends=pp.getList(receiveList);
-				
+				if(receiveList.equals("same name%"))
+					isValid=false;
+				else{
+					isValid=true;
+					friends=pp.getList(receiveList);
+				}
 				//System.out.println("get friends list.");
 			}
 			clientSocket.close();

@@ -86,7 +86,7 @@ public class UDPprotocal {
 	       		 String portNumber = memberData[3];
 	       		 
 	       		 if(totalList.hasName(name)){
-	       			 return "same name";
+	       			 return "same name%";
 	       		 }
 	       		 else{
 	       			 totalList.addMember(name, ipAddress, portNumber);
