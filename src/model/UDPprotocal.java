@@ -10,7 +10,7 @@ public class UDPprotocal {
     MemberList totalList=new MemberList();
     
     public MemberList getList(String list){
-    	if(list=="same name"){
+    	if(list=="same name#"){
     		totalList.setIsValid(false);
     		return totalList;
     	}
