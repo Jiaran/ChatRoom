@@ -26,7 +26,7 @@ public class UDPClient
 	}
 	
 	public void UDPClientLog(String type, String inputName, String inputPort) throws IOException{
-		int ServerPort=9876;
+		int ServerPort=8888;
 
 		DatagramSocket clientSocket = new DatagramSocket();
 		clientSocket.setSoTimeout(TIMEOUT); 
