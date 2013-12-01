@@ -59,7 +59,7 @@ public class Login extends GUISection {
                 return;
             }
             System.out.println(name);
-            myController.login(name);
+            myController.login(name, myServerIPAddress.getText());
             
         }
         

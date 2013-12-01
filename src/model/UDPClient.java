@@ -11,7 +11,7 @@ public class UDPClient
 	
 	private String serverAddress;
 	
-	public void UDPClient(String serverIP){
+	public UDPClient(String serverIP){
 		serverAddress=serverIP;
 	}
 	

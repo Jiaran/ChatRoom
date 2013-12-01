@@ -109,7 +109,7 @@ public class Controller {
      */
     public void login (String name, String address) {
         myModel = new Model(name);
-        
+        myModel.setUDPServerAddress(address);
         myModel.setController(this);
         myLogin.setVisible(false);
         

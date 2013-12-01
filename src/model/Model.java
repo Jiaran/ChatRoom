@@ -24,7 +24,7 @@ import controller.Controller;
 public class Model {
     
     private String myPort="10001";
-    private String myUDPServerAdrress= "localhost";
+    private String myUDPServerAddress= "localhost";
     private String myName="";
     private MemberList myTotalList= null;
     private Member myChatter=null;
@@ -49,7 +49,7 @@ public class Model {
     }
     
     public void login(){
-        UDPClient uc= new UDPClient();
+        UDPClient uc= new UDPClient(myUDPServerAddress);
         try{
             uc.logIn(myName, myPort);
             myTotalList= uc.getList();
@@ -67,7 +67,7 @@ public class Model {
     }
     
     public void refresh(){
-        UDPClient uc= new UDPClient();
+        UDPClient uc= new UDPClient(myUDPServerAddress);
         try{
             uc.logIn("", myPort);
             myTotalList= uc.getList();
@@ -80,7 +80,7 @@ public class Model {
     }
     
     public void logout(){
-        UDPClient uc= new UDPClient();
+        UDPClient uc= new UDPClient(myUDPServerAddress);
         try{
             uc.logOut(myName);
         }
@@ -231,5 +231,7 @@ public class Model {
          
      }
      
-
+     public void setUDPServerAddress(String serverAddress){
+         myUDPServerAddress= serverAddress;
+     }
 }
