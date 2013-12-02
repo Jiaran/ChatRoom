@@ -59,7 +59,7 @@ public class Model {
             }
         }
         catch (Exception e){
-            System.out.println("Fail to Connect");
+            e.printStackTrace();
             JOptionPane.showMessageDialog(null, "Fail to Connect to the Server");
             System.exit(0);
            
