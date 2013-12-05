@@ -112,6 +112,7 @@ public class Model {
     }
     public synchronized void setIsChatting(boolean b){
         isChatting=b;
+        System.out.println(b);
     }
     
     public boolean start(){

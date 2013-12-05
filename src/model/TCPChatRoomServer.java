@@ -74,24 +74,23 @@ public class TCPChatRoomServer implements Runnable{
     public void run()   {
         while(true){
             try {
-                
-                if (clientSocket == null|| clientSocket.isClosed()) {
-                    clientSocket = serverSocket.accept();
+                Socket tempSo = serverSocket.accept();
+                if(myModel.isChatting()){
                     
-                    System.out.println("get Socket");
-                    if (myModel.isChatting()) {
-                        PrintWriter temp =new PrintWriter(clientSocket.getOutputStream(), true);
-                        temp.println("NO");
-                        System.out.println("no accept");
-                        clientSocket.close();
-                        
-                    }
-                    else {
-                        myModel.setIsChatting(true);
-                        new Thread(new TCPListeningThread(clientSocket)).start();
-
-                    }
+                    System.out.println("xxxxxxxx");
+                    System.out.println(myModel.isChatting()+"xxxxxxxx");
+                    PrintWriter temp =new PrintWriter(tempSo.getOutputStream(), true);
+                    temp.println("NO");
+                    System.out.println("no accept xxxxxxxxx");
+                    tempSo.close();
                 }
+                else if (clientSocket == null|| clientSocket.isClosed()) {
+                    clientSocket = tempSo;
+                    new Thread(new TCPListeningThread(clientSocket)).start();
+
+                    
+                }
+               
 
             }
             catch (IOException e) {
@@ -175,6 +174,7 @@ public class TCPChatRoomServer implements Runnable{
                 
                 if (myModel.ask(inputLine) == JOptionPane.YES_OPTION) {
                     out.println("Yes");
+                    myModel.setIsChatting(true);
                     while ((inputLine = in.readLine()) != null) {
                         if(inputLine.equals("EXIT")){
                             out.println("EXIT");
@@ -207,6 +207,7 @@ public class TCPChatRoomServer implements Runnable{
                 exit();
                 System.out.println("server down");
                 clientSocket = null;
+               
             }
             catch (IOException e) {
                 System.out.println("Exception caught when trying to listen on port "
