@@ -1,9 +1,11 @@
 package GUIObject;
 
 import java.awt.Color;
+
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
-import starter.ClientStart;
+
+import controller.Controller;
 
 
 @SuppressWarnings("serial")
@@ -11,8 +13,8 @@ public abstract class GUISection extends JPanel {
     protected String myTitle;
     protected final int M_WIDTH = 100;
     protected final int M_HEIGHT = 100;
-    protected ClientStart myStarter=null;
-    public GUISection (String title,ClientStart c) {
+    protected Controller myStarter=null;
+    public GUISection (String title,Controller c) {
         this.myTitle = title;
         myStarter=c;
         initialBorder();

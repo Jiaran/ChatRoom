@@ -1,11 +1,11 @@
 package GUIObject;
 
 
-import starter.ClientStart;
+import controller.Controller;
 
 public class RTTDisplay extends Display {
 
-    public RTTDisplay (ClientStart c) {
+    public RTTDisplay (Controller c) {
         super(c);
        
     }

@@ -6,10 +6,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import starter.ClientStart;
+
+import controller.Controller;
 
 
 @SuppressWarnings("serial")
@@ -17,7 +19,7 @@ public class RunCode extends GUISection {
     private JTextArea myInput= new JTextArea();
     private JButton myButton= new JButton("Send");
     
-    public RunCode (ClientStart c) {
+    public RunCode (Controller c) {
         super("Input",c);
 
         this.setLayout(new BorderLayout());

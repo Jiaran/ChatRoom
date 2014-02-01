@@ -11,9 +11,9 @@ import java.util.Iterator;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 
+import controller.Controller;
 import background.Member;
 import background.MemberList;
-import starter.ClientStart;
 
 
 
@@ -26,7 +26,7 @@ public class ClientList extends GUISection implements View {
     private String buttonName;
     private MemberList myOnlineClients = null;
     
-    public ClientList ( ClientStart c ) {
+    public ClientList ( Controller c ) {
         super("",c);
         this.buttonName = "Add to Chat";
         setLayout(new GridBagLayout());

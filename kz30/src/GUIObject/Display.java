@@ -6,9 +6,11 @@ import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+
 import javax.swing.JTextArea;
 import javax.swing.Timer;
-import starter.ClientStart;
+
+import controller.Controller;
 
 
 
@@ -19,10 +21,10 @@ public class Display extends JTextArea implements ActionListener,View {
     private final int DEFAULT_HEIGHT = 450;
     private int DEFAULT_PERIOD = 60;
     private Timer timer = new Timer(DEFAULT_PERIOD, this);
-    protected ClientStart myStarter=null;
+    protected Controller myStarter=null;
     protected List<String> myMessages=null;
     
-    public Display (ClientStart c) {
+    public Display (Controller c) {
         myStarter=c;
         timer.setInitialDelay(0);
         timer.start();

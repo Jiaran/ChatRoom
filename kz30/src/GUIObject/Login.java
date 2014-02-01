@@ -4,12 +4,14 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import starter.ClientStart;
+
+import controller.Controller;
 
 @SuppressWarnings("serial")
 public class Login extends GUISection {
@@ -18,7 +20,7 @@ public class Login extends GUISection {
     private JTextField myNameField=new JTextField();
     private JTextField myServerIPAddress= new JTextField();
     
-    public Login(ClientStart c){
+    public Login(Controller c){
         super("Please Enter Your Name",c);
         
         this.setLayout(new BorderLayout());

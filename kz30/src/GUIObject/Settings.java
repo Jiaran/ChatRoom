@@ -2,8 +2,10 @@ package GUIObject;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;
+
 import javax.swing.JComponent;
-import starter.ClientStart;
+
+import controller.Controller;
 
 
 @SuppressWarnings("serial")
@@ -12,7 +14,7 @@ public class Settings extends GUISection {
     private int num = 0;
     
 
-    public Settings (String title, ClientStart c) {
+    public Settings (String title, Controller c) {
         super(title,c);
 
         myLayout();

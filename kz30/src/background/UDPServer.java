@@ -2,7 +2,12 @@ package background;
 
 import java.net.*;
 
-
+/**
+ *@author Kangyi Zhang
+ *This is the UDP server, which store the information of all users, who are available to
+ *chat. If a user's login name has already being occupied, the server would refuse the 
+ *login request. 
+ */
 public class UDPServer
 {
     // private MemberList totalList;

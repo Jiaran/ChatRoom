@@ -1,5 +1,9 @@
-package starter;
-
+package controller;
+/**
+ * @author Jiaran, KanyYi
+ * Controller class control the flow of the program. It acts as a mediator between
+ * View and Model. 
+ */
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -24,7 +28,7 @@ import GUIObject.RunCode;
 import GUIObject.Settings;
 
 
-public class ClientStart {
+public class Controller {
     private MainFrame myLogin = new MainFrame("Login");
     private MainFrame myClientWindow = new MainFrame("Client Window");
     private MainFrame myChatRoom = new MainFrame("ChatRoom");
@@ -35,15 +39,20 @@ public class ClientStart {
     private RTTDisplay myRTTDisplay=null;
     private Display myDisplay = null;
 
-    public ClientStart () {
+    public Controller () {
+        // set Login Window
         myLogin.getContentPane().add(new Login(this));
         myLogin.pack();
         myLogin.setVisible(true);
         myLogin.addWindowListener(new CloseChatRoom());
         initialButtons();
+        
+        // set Client Window
         myClientWindow.getContentPane().add(new HalfScreen(myClientList, myButtons));
         myClientWindow.setLocation(200, 0);
         myClientWindow.addWindowListener(new CloseChatRoom());
+        
+        // set RTT display window
         myRTTDisplay=new RTTDisplay(this);
         JScrollPane paneScrollPane = new JScrollPane(myRTTDisplay);
         paneScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -65,30 +74,27 @@ public class ClientStart {
         JButton b3 = new JButton("Refresh");
         b3.addActionListener(new ActionRefresh());
         myButtons.addButton(b3);
-
-    }
-
-    public void initial () {
-
     }
 
     public static void main (String[] args) {
 
         SwingUtilities.invokeLater(new Runnable() {
             public void run () {
-
-                new ClientStart();
+                new Controller();
             }
         });
 
     }
 
+    /**
+     * @param name : name get from user input. Cannot be empty;
+     * This is the login process;
+     */
     public void login (String name, String address) {
         myProcessor = new TCPProcessor(name);
         myProcessor.setUDPServerAddress(address);
         myProcessor.setStarter(this);
         myLogin.setVisible(false);
-        
         myProcessor.login();
         myClientList.setMembers(myProcessor.getTotalList());
         myClientList.updateView();
@@ -96,7 +102,9 @@ public class ClientStart {
         myClientWindow.setVisible(true);
     }
 
-   
+    /**
+     * start establish TCP connection between peers
+     */
     public void start () {
         if(myProcessor.begin()){
             showChatRoom();
@@ -105,13 +113,12 @@ public class ClientStart {
             JOptionPane.showMessageDialog(null, "Select who you want to chat");
             return;
         } 
-       
     }
 
-    public List<String> getMessages(){
-        return myProcessor.getMessageList();
-    }
-    
+    /**
+     * this method hides the client list and show chat room interface for the 
+     * user to chat with others.
+     */
     public void showChatRoom(){
         myClientWindow.setVisible(false);
         myChatRoom = new MainFrame("ChatRoom");
@@ -131,6 +138,13 @@ public class ClientStart {
         myChatRoom.setVisible(true);
     }
 
+    /**
+     * This is the class whose method is called when window is closed.
+     * It guarantees our TCP connection ends properly, all the TCP connection
+     * should be closed. And our program is ready for next connection.
+     * It also refreshes the client list. 
+     *
+     */
     private class BackToList extends WindowAdapter {
         public void windowClosing (WindowEvent e) {
             e.getWindow().dispose();
@@ -178,26 +192,50 @@ public class ClientStart {
 
     }
 
+    /**
+     * @param text : text to send
+     * Called when user input text from the view.
+     */
     public void send (String text) {
         myProcessor.send(text);
     }
 
+    /**
+     * disconnect informs UDP server that this user is leaving
+     */
     public void disconnect () {
         if(myProcessor!=null){
             myProcessor.logout();
         }
     }
 
+    /**
+     * updates client lists from the UDP server
+     */
     public void refresh () {
         myProcessor.refresh();
         myClientList.setMembers(myProcessor.getTotalList());
         myClientList.updateView();
     }
 
+    /**
+     * called when user and a chatter to the chat room
+     */
     public void addClientToChatRoom (String clientName) {
         myProcessor.addClientToChatRoom(clientName);
     }
 
+    /**
+     * @return Messages in the model so that view can present it to the user
+     * about what they said and what their chatters said
+     */
+    public List<String> getMessages(){
+        return myProcessor.getMessageList();
+    }
+    
+    /**
+     * @return RTT information
+     */
     public List<String> getRTT(){
         if(myProcessor==null)
             return null;

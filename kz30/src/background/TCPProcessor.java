@@ -12,7 +12,10 @@ import java.util.Map.Entry;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-import starter.ClientStart;
+import controller.Controller;
+
+
+
 
 
 //
@@ -23,8 +26,15 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
-//import java.net.ServerSocket;
 
+
+/**
+ *@author Kangyi Zhang
+ *This background processor handles all data management. It generate a listening socket to 
+ *wait for others users to start a conversation. It also could build a socket to start an 
+ *conversation with another user. During chatting, the listening socket cannot start another 
+ *conversation with else, which means the application cannot accept invitation from others.  
+ */
 
 public class TCPProcessor {
     private String myPortNumber="9999";
@@ -36,11 +46,10 @@ public class TCPProcessor {
     private boolean ifClient=false;
     private List<String> myRecords= new ArrayList<String>();
     private TCPlistening runListening= new TCPlistening(this);
-
-    private ClientStart myStarter;
+    private Controller myStarter;
     private Map<Integer,String> myRTTMap= new HashMap<Integer,String>();
     
-    //////////////////////////////Client
+    //Client
     private int clientPortNumber = 9998;
     private TCPProcessor myTCPProcessor=this;
     private String myIPAddress="localhost";
@@ -50,6 +59,154 @@ public class TCPProcessor {
     private Socket clientSocket=null;
     private int clientMessageID=0;
     private Map<Integer, Long> clientMessageSendTime= new HashMap<Integer, Long>();
+    
+    /**
+     * This Class is a thread, which is always running in the background, 
+     * and always listening to the network, waiting for others user's to
+     * connect and start chat 
+     */
+    public class TCPlistening implements Runnable{
+	    private TCPProcessor listenModel=null;
+	    int listenPortNumber =0;
+	    private ServerSocket serverSocket=null;
+	    private PrintWriter serverOut=null;
+	    private BufferedReader serverIn=null;
+	    private Socket newSocket=null;
+	    private int listenID=0;
+	    private Map<Integer, Long> mySendTimeList= new HashMap<Integer, Long>();
+	    
+	    public TCPlistening(TCPProcessor processorS){
+	        listenModel=processorS;
+	        try {
+	            serverSocket = new ServerSocket(listenPortNumber);
+	        }
+	        catch(Exception e){
+	            e.printStackTrace();
+	        }
+	    }
+	    
+	    public void run()   {
+	        while(true){
+	            try {
+	            	Socket tempSocket=serverSocket.accept();
+	            	if(ifChatting){
+	            		System.out.print("xxxxxxxxxxxxxxxxxxxx");
+	            		System.out.print(ifChatting+"xxxxxxxxxxxxxxxxxxxxxxxx");
+	            		PrintWriter tempOut =new PrintWriter(tempSocket.getOutputStream(), true);
+	                    tempOut.println("NO");
+	                    System.out.println("no accept xxxxxxxxx");
+	                    tempSocket.close();
+	            	}
+	            	else if (newSocket == null|| newSocket.isClosed()) {
+	                    newSocket = tempSocket;
+	                    new Thread(new TCPPassiveListeningThread(newSocket)).start();
+	                }
+	            }
+	            catch (IOException e) {
+	                e.printStackTrace();
+	            }
+	        }
+	    }
+	    
+	    public void sendMessage(String fromWhom) {
+	        if(serverOut==null){
+	            listenModel.addMessage("Sorry, your friend left");
+	            return;
+	        }
+	        if (fromWhom != null) {
+	        	serverOut.println(listenID+"%"+fromWhom);
+	            listenModel.addToMessageMap(listenID, fromWhom);
+	            mySendTimeList.put(listenID, System.currentTimeMillis());
+	            listenID++;
+	        }
+	    }
+	    
+	    public void quit () {
+	        if (serverOut != null) {
+	            serverOut.println("NOREPLY%" + listenModel.getName() + " left the chat room");
+	            serverOut.println("EXIT");
+	        }
+	    }
+	    
+	    private void exit(){
+	        try {
+	            if (serverOut != null){
+	                serverOut.close();
+	            }
+	            if (serverIn != null)
+	                serverIn.close();
+	            if (newSocket != null && !newSocket.isClosed()){
+	                newSocket.shutdownOutput();
+	                newSocket.close();
+	            }
+	            serverOut=null;
+	            serverIn=null;
+	            newSocket = null;
+	            mySendTimeList.clear();
+	        }
+	        catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	    }
+	    
+	    class TCPPassiveListeningThread implements Runnable{
+	        private Socket clientSocket= null;
+	        public TCPPassiveListeningThread(Socket s){
+	            clientSocket= s;
+	        }
+	        public void run () {
+	            try {
+	                serverOut =new PrintWriter(clientSocket.getOutputStream(), true);
+	                serverIn =new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+	                String keyInput;
+	                keyInput = serverIn.readLine();
+	                if (listenModel.query(keyInput) == JOptionPane.YES_OPTION) {
+	                    serverOut.println("Yes");
+	                    ifChatting=true;
+	                    while ((keyInput = serverIn.readLine()) != null) {
+	                        if(keyInput.equals("EXIT")){
+	                            serverOut.println("EXIT");
+	                            break;
+	                        }
+	                        if(keyInput.matches("RECEIVE\\d*")){
+	                            String uniqueIDString=keyInput.substring(7);
+	                            int uniqueID= Integer.parseInt(uniqueIDString);
+	                            long sendTime= mySendTimeList.get(uniqueID);
+	                            long rtTime= System.currentTimeMillis()-sendTime;
+	                            listenModel.addMessage(uniqueID, rtTime);
+	                            continue;
+	                        }
+	                        if(keyInput.matches("NOREPLY.*")){
+	                            String[] temp=keyInput.split("%", 2);
+	                            keyInput=temp[1];
+	                            listenModel.addMessage(keyInput);
+	                            continue;
+	                        }
+	                        System.out.println(keyInput);
+	                        String[] temp=keyInput.split("%", 2);
+	                        serverOut.println("RECEIVE"+temp[0]);
+	                        keyInput=temp[1];
+	                        listenModel.addMessage(keyInput);
+	                    }
+	                }
+	                exit();
+	                System.out.println("server down");
+	                clientSocket = null;
+	            }
+	            catch (IOException e) {
+	                System.out.println("Exception caught when trying to listen on port "
+	                                   + listenPortNumber + " or listening for a connection");
+	                System.out.println(e.getMessage());
+	                e.printStackTrace();
+	            }
+	        }
+	    }
+	    
+	    public Integer getPort(){
+	        return serverSocket.getLocalPort();
+	    }
+	}
+    
     
     public TCPProcessor(String name){
         myName=name;
@@ -196,7 +353,7 @@ public class TCPProcessor {
         }
     }
 
-     public void setStarter (ClientStart starter) {
+     public void setStarter (Controller starter) {
         myStarter = starter;
     }
      
@@ -210,7 +367,7 @@ public class TCPProcessor {
      
      public void addMessage(int uniqueID, long rtt){
          String message=myRTTMap.get(uniqueID);
-         message= message + " ::::this message's round trip time is "+rtt+"ms";
+         message= message + " /////this message's round trip time is "+rtt+" ms";
          myRTTMap.put(uniqueID, message);
      }
      
@@ -286,7 +443,7 @@ public class TCPProcessor {
              clientOut = new PrintWriter(thisSocket.getOutputStream(), true);
              clientIn = new BufferedReader(new InputStreamReader(thisSocket.getInputStream()));
              clientOut.println(myTCPProcessor.getName());
-             new Thread(new TCPListeningThread()).start();
+             new Thread(new TCPactiveListeningThread()).start();
          }
          catch (UnknownHostException e) {
              System.err.println("Don't know about host " + myIPAddress);
@@ -299,191 +456,52 @@ public class TCPProcessor {
          }
      }
 
-     class TCPListeningThread implements Runnable{
+     class TCPactiveListeningThread implements Runnable{
          public void run () {
-             String fromWhom;
+             String receivedMessage;
              try {
                  String ifAccept="";
                  ifAccept= clientIn.readLine();
+                 System.out.print(ifAccept);
                  if(ifAccept==null ||!ifAccept.equals("Yes") ){
                      exit();
                      return;
                  }
                  myTCPProcessor.setIsChatting(true);
-                 while ((fromWhom = clientIn.readLine()) != null) {
-                     System.out.println(fromWhom);
-                     if(fromWhom.equals("EXIT")){
-                         clientOut.println("EXIT");
-                         break;
-                     }
-                     if(fromWhom.matches("RECEIVE\\d*")){
-                         String uniqueIDString=fromWhom.substring(7);
-                         int uniqueID= Integer.parseInt(uniqueIDString);
-                         long sendTime= clientMessageSendTime.get(uniqueID);
-                         long rtt= System.currentTimeMillis()-sendTime;
-                         myTCPProcessor.addMessage(uniqueID, rtt);
-                         continue;
-                     }
-                     if(fromWhom.matches("NOREPLY.*")){
-                         String[] temp=fromWhom.split("%", 2);
-                         fromWhom=temp[1];
-                         myTCPProcessor.addMessage(fromWhom);
-                         continue;
-                     }
-                     String[] temp=fromWhom.split("%", 2);
-                     System.out.println(temp[0]);
-                     clientOut.println("RECEIVE"+temp[0]);
-                     fromWhom=temp[1];
-                     myTCPProcessor.addMessage(fromWhom);
-                 }
-                 exit();
-             }
+				while ((receivedMessage = clientIn.readLine()) != null) {
+					if (receivedMessage.equals("EXIT")) {
+						clientOut.println("EXIT");
+						break;
+					}
+					if (receivedMessage.matches("RECEIVE\\d*")) {
+						String uniqueIDString = receivedMessage.substring(7);
+						int uniqueID = Integer.parseInt(uniqueIDString);
+						long sendTime = clientMessageSendTime.get(uniqueID);
+						long rtt = System.currentTimeMillis() - sendTime;
+						myTCPProcessor.addMessage(uniqueID, rtt);
+						continue;
+					}
+					if (receivedMessage.matches("NOREPLY.*")) {
+						String[] temp = receivedMessage.split("%", 2);
+						receivedMessage = temp[1];
+						myTCPProcessor.addMessage(receivedMessage);
+						continue;
+					}
+					String[] temp = receivedMessage.split("%", 2);
+					System.out.println(temp[0]);
+					clientOut.println("RECEIVE" + temp[0]);
+					receivedMessage = temp[1];
+					myTCPProcessor.addMessage(receivedMessage);
+				}
+				System.out.print("yyyyyyyyyyyyyyyyyyyy");
+				exit();
+			}
              catch (IOException e) {
                  System.out.println(clientIn);
                  e.printStackTrace();
              }
          }
      }
-     
-     public class TCPlistening implements Runnable{
-    	    private TCPProcessor listenModel=null;
-    	    int listenPortNumber =0;
-    	    private ServerSocket serverSocket=null;
-    	    private PrintWriter serverOut=null;
-    	    private BufferedReader serverIn=null;
-    	    private Socket clientSocket=null;
-    	    private int listenID=0;
-    	    private Map<Integer, Long> mySendTimeList= new HashMap<Integer, Long>();
-    	    
-    	    public TCPlistening(TCPProcessor processorS){
-    	        listenModel=processorS;
-    	        try {
-    	            serverSocket = new ServerSocket(listenPortNumber);
-    	        }
-    	        catch(Exception e){
-    	            e.printStackTrace();
-    	        }
-    	    }
-    	    
-    	    public void run()   {
-    	        while(true){
-    	            try {
-    	                if (clientSocket == null|| clientSocket.isClosed()) {
-    	                    clientSocket = serverSocket.accept();
-    	                    if (listenModel.whetherIsChatting()) {
-    	                        PrintWriter temp =new PrintWriter(clientSocket.getOutputStream(), true);
-    	                        temp.println("NO");
-    	                        clientSocket.close();
-    	                    }
-    	                    else {
-    	                        listenModel.setIsChatting(true);
-    	                        new Thread(new TCPListeningThread(clientSocket)).start();
-    	                    }
-    	                }
-    	            }
-    	            catch (IOException e) {
-    	                e.printStackTrace();
-    	            }
-    	        }
-    	    }
-    	    
-    	    public void sendMessage(String fromWhom) {
-    	        if(serverOut==null){
-    	            listenModel.addMessage("Sorry, your friend left");
-    	            return;
-    	        }
-    	        if (fromWhom != null) {
-    	        	serverOut.println(listenID+"%"+fromWhom);
-    	            listenModel.addToMessageMap(listenID, fromWhom);
-    	            mySendTimeList.put(listenID, System.currentTimeMillis());
-    	            listenID++;
-    	        }
-    	    }
-    	    
-    	    public void quit () {
-    	        if (serverOut != null) {
-    	            serverOut.println("NOREPLY%" + listenModel.getName() + " left the chat room");
-    	            serverOut.println("EXIT");
-    	        }
-    	    }
-    	    
-    	    private void exit(){
-    	        try {
-    	            if (serverOut != null){
-    	                serverOut.close();
-    	            }
-    	            if (serverIn != null)
-    	                serverIn.close();
-    	            if (clientSocket != null && !clientSocket.isClosed()){
-    	                clientSocket.shutdownOutput();
-    	                clientSocket.close();
-    	            }
-    	            serverOut=null;
-    	            serverIn=null;
-    	            clientSocket = null;
-    	            mySendTimeList.clear();
-    	        }
-    	        catch (Exception e) {
-    	            e.printStackTrace();
-    	        }
-    	    }
-    	    
-    	    class TCPListeningThread implements Runnable{
-    	        private Socket clientSocket= null;
-    	        public TCPListeningThread(Socket s){
-    	            clientSocket= s;
-    	        }
-    	        public void run () {
-    	            try {
-    	                serverOut =new PrintWriter(clientSocket.getOutputStream(), true);
-    	                serverIn =new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-    	                String keyInput;
-    	                keyInput = serverIn.readLine();
-    	                if (listenModel.query(keyInput) == JOptionPane.YES_OPTION) {
-    	                    serverOut.println("Yes");
-    	                    while ((keyInput = serverIn.readLine()) != null) {
-    	                        if(keyInput.equals("EXIT")){
-    	                            serverOut.println("EXIT");
-    	                            break;
-    	                        }
-    	                        if(keyInput.matches("RECEIVE\\d*")){
-    	                            String uniqueIDString=keyInput.substring(7);
-    	                            int uniqueID= Integer.parseInt(uniqueIDString);
-    	                            long sendTime= mySendTimeList.get(uniqueID);
-    	                            long rtTime= System.currentTimeMillis()-sendTime;
-    	                            listenModel.addMessage(uniqueID, rtTime);
-    	                            continue;
-    	                        }
-    	                        if(keyInput.matches("NOREPLY.*")){
-    	                            String[] temp=keyInput.split("%", 2);
-    	                            keyInput=temp[1];
-    	                            listenModel.addMessage(keyInput);
-    	                            continue;
-    	                        }
-    	                        System.out.println(keyInput);
-    	                        String[] temp=keyInput.split("%", 2);
-    	                        serverOut.println("RECEIVE"+temp[0]);
-    	                        keyInput=temp[1];
-    	                        listenModel.addMessage(keyInput);
-    	                    }
-    	                }
-    	                exit();
-    	                System.out.println("server down");
-    	                clientSocket = null;
-    	            }
-    	            catch (IOException e) {
-    	                System.out.println("Exception caught when trying to listen on port "
-    	                                   + listenPortNumber + " or listening for a connection");
-    	                System.out.println(e.getMessage());
-    	                e.printStackTrace();
-    	            }
-    	        }
-    	    }
-    	    
-    	    public Integer getPort(){
-    	        return serverSocket.getLocalPort();
-    	    }
-    	}
 
 
 }

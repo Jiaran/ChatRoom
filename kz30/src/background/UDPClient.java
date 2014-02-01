@@ -3,6 +3,11 @@ package background;
 import java.io.*;
 import java.net.*;
 
+/**
+ *@author Kangyi Zhang
+ *This class generate a UDP socket, send the login request to the server, and receive 
+ *the information of all available users.
+ */
 public class UDPClient 
 {
 	private static final int TIMEOUT=5000;
